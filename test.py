@@ -6,23 +6,19 @@ import random
 def generate_red_black_tree(n):
     """
     Returns a randomly generated red-black-tree with n nodes that
-    meets specfications. If the tree did not meet specifications
-    'None, None' is returned.
+    supposedly meets specfications.
     
     Args:
-    n (int): Number of nodes the red-black tree will have
+    n (int): Number of nodes the red-black tree will have.
 
     Returns:
-    tree (RBTree): A authenticated red-black tree instance, else None
-    keys (list): The keys contained in above tree, else None.
+    tree (RBTree): A authenticated red-black tree instance.
+    keys (list): The keys contained in above tree.
     """
     upper_bound = n + 50
     keys = random.sample(range(1, upper_bound), n)
     tree = generate_testing_tree(keys)
-    if tree.check_red_black_tree():
-        return None, None
-    else:
-        return tree, keys
+    return tree, keys
 
 
 def generate_testing_tree(keys):
@@ -51,7 +47,7 @@ def test_trees(t, n):
     """
     for i in range(t):
         tree, keys = generate_red_black_tree(n)
-        if tree:
+        if not tree.check_red_black_tree():
             print(keys)
             print(tree.root)
 
