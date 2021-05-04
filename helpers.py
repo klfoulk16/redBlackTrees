@@ -1,13 +1,13 @@
-"""A custom testing library for red black trees."""
-
+"""Helper functions to generate Red Black Trees."""
 import rbtrees
 import random
 
-def generate_red_black_tree(n):
+
+def random_rbtree(n):
     """
     Returns a randomly generated red-black-tree with n nodes that
     supposedly meets specfications.
-    
+
     Args:
     n (int): Number of nodes the red-black tree will have.
 
@@ -17,16 +17,16 @@ def generate_red_black_tree(n):
     """
     upper_bound = n + 50
     keys = random.sample(range(1, upper_bound), n)
-    tree = generate_testing_tree(keys)
+    tree = generate_rbtree(keys)
     return tree, keys
 
 
-def generate_testing_tree(keys):
+def generate_rbtree(keys):
     """
     Takes a list of nodes and returns the tree of the nodes inserted
     in that order. Made for recreating parts of failed test cases to be
     used for experimentation.
-    
+
     Args:
     keys (list): List of keys to generate a red-black tree from -
     the keys will be inserted in the given order.
@@ -38,18 +38,3 @@ def generate_testing_tree(keys):
     for i in keys:
         tree.insert(i)
     return tree
-
-
-def test_trees(t, n):
-    """
-    Creates and tests t trees with n nodes. If a tree does not pass the test it
-    is printed out along with its keys for inspection and experimentation.
-    """
-    for i in range(t):
-        tree, keys = generate_red_black_tree(n)
-        if not tree.check_red_black_tree():
-            print(keys)
-            print(tree.root)
-
-if __name__ == '__main__':
-    test_trees(500, 70)

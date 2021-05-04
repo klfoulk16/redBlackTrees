@@ -1,5 +1,6 @@
 """Creation and maintenance of Red-Black Trees"""
 
+
 class RBTree:
     """
     A Red-Black tree.
@@ -9,13 +10,14 @@ class RBTree:
         """
         Initialize tree with root as universal NIL node.
         """
-        self.nil = Node('B', None, None, None, None)
+        self.nil = Node("B", None, None, None, None)
         self.root = self.nil
-    
+
     def __repr__(self):
         """
         Adapted from MIT 6.006 reading section, bst.py.
         """
+
         if self.root is self.nil:
             return "B:empty"
 
@@ -68,19 +70,18 @@ class RBTree:
 
         lines = recurse(self.root)[0]
 
-        return '\n'.join(lines)
-
+        return "\n".join(lines)
 
     def insert(self, key):
         """
-        Insert new node in tree. 
+        Insert new node in tree.
         Assumes that key is not already present in self.
-        
+
         Args:
         key (int): Unique key to be added to Red-Black Tree as a new node.
         """
         # create node z, with parents and children as tree.nil
-        z = Node('R', key, self.nil, self.nil, self.nil)
+        z = Node("R", key, self.nil, self.nil, self.nil)
         # insert node Z and color it red
         y = self.nil
         x = self.root
@@ -88,7 +89,7 @@ class RBTree:
         if x == y:
             # set the root to be z and make z black
             self.root = z
-            z.color = 'B'
+            z.color = "B"
         # otherwise find the right spot in the tree
         else:
             # while x is not nil (aka we've reached the bottom of the tree)
@@ -116,24 +117,24 @@ class RBTree:
     def insert_fixup(self, z):
         """
         Resolve any conflicts created in tree after insertion.
-        
+
         Args:
         z (node): Recently updated node to be checked for conflicts.
         """
         # check the color of z's parent, if it's red, we have some problems
         # breakpoint()
-        if z.parent.color == 'R':
+        if z.parent.color == "R":
             # check the color of z's uncle
             # see if z is on the left of right side of it's grandparent
             if z.parent == z.parent.parent.left:
                 # z is on the left, so uncle is on right
                 # if the uncle is also red...
-                if z.parent.parent.right.color == 'R':
+                if z.parent.parent.right.color == "R":
                     # change the uncle and parent to black
-                    z.parent.color = 'B'
-                    z.parent.parent.right.color = 'B'
+                    z.parent.color = "B"
+                    z.parent.parent.right.color = "B"
                     # change the grandparent to red
-                    z.parent.parent.color = 'R'
+                    z.parent.parent.color = "R"
                     # do we need to check that the uncle's color didn't
                     # mess something up?
                     # then repeat for the grandparent
@@ -145,9 +146,9 @@ class RBTree:
                     # right rotate grandfather
                     self.right_rotate(z.parent.parent)
                     # swap colors of former grandfather and parent
-                    z.parent.color = 'B'
+                    z.parent.color = "B"
                     # the grandfather is now parent's right child
-                    z.parent.right.color = 'R'
+                    z.parent.right.color = "R"
                 # Left Right Case
                 # parent left child, z right child
                 elif z == z.parent.right:
@@ -156,16 +157,16 @@ class RBTree:
                     # right rotate orig grandparent (which is now z's parent)
                     self.right_rotate(z.parent)
                     # z becomes black
-                    z.color = 'B'
+                    z.color = "B"
                     # grandparent (now z's right child) becomes red
-                    z.right.color = 'R'
+                    z.right.color = "R"
             else:
-                if z.parent.parent.left.color == 'R':
+                if z.parent.parent.left.color == "R":
                     # change the uncle and parent to black
-                    z.parent.color = 'B'
-                    z.parent.parent.left.color = 'B'
+                    z.parent.color = "B"
+                    z.parent.parent.left.color = "B"
                     # change the grandparent to red
-                    z.parent.parent.color = 'R'
+                    z.parent.parent.color = "R"
                     # do we need to check that the uncle's color didn't mess
                     # something up?
                     # then repeat for the grandparent
@@ -175,9 +176,9 @@ class RBTree:
                     # left rotate grandfather
                     self.left_rotate(z.parent.parent)
                     # swap colors of former grandfather and parent
-                    z.parent.color = 'B'
+                    z.parent.color = "B"
                     # the grandfather is now parent's left child
-                    z.parent.left.color = 'R'
+                    z.parent.left.color = "R"
                 # Right Left Case
                 # parent right child, z left child
                 elif z == z.parent.left:
@@ -186,15 +187,15 @@ class RBTree:
                     # left rotate orig grandparent (which is now z's parent)
                     self.left_rotate(z.parent)
                     # z becomes black
-                    z.color = 'B'
+                    z.color = "B"
                     # grandparent (now z's right child) becomes red
-                    z.left.color = 'R'
-            self.root.color = 'B'
+                    z.left.color = "R"
+            self.root.color = "B"
 
     def left_rotate(self, x):
         """
         Rotate left on node x.
-        
+
         Args:
         x (Node): Node to rotate on. x.left != self.nil
         """
@@ -214,7 +215,7 @@ class RBTree:
         elif x == x.parent.left:
             # if x was on the left side of it's parent
             x.parent.left = y
-        else:   # if x was on right
+        else:  # if x was on right
             x.parent.right = y
 
         # put x on y's left
@@ -245,7 +246,7 @@ class RBTree:
             # if y was on the left side of it's parent
             if y == y.parent.left:
                 y.parent.left = x
-            else:   # if x was on right
+            else:  # if x was on right
                 y.parent.right = x
 
         # put y on x's right
@@ -262,7 +263,7 @@ class RBTree:
         keys (list): List of keys previously traversed, else None
 
         Returns:
-        keys (list): list of keys decending from Node x 
+        keys (list): list of keys decending from Node x
         """
         if keys is None:
             keys = []
@@ -281,7 +282,7 @@ class RBTree:
         bool: True if red-black tree requirements are met, else False.
         """
         # root and leaves (NIL) are black
-        if self.root.color != 'B':
+        if self.root.color != "B":
             print("Root was not black")
             return False
 
@@ -289,29 +290,30 @@ class RBTree:
         if not self.check_red_children(self.root):
             print("Red children were not black")
             return False
-        
+
         # keys are in sorted order
         keys = self.inorder_tree_walk(self.root)
-        if not all(keys[i] < keys[i + 1] for i in range(len(keys)-1)):
-            print(f"Keys were not in order: {keys}")
-            return False
         # make sure no duplicate keys (rule of binary search tree)
         if len(set(keys)) != len(keys):
             print("There were duplicate keys")
             return False
-        
-        # all paths from node to it's descendants have same number of black nodes
+        if not all(keys[i] < keys[i + 1] for i in range(len(keys) - 1)):
+            print(f"Keys were not in order: {keys}")
+            return False
+
+        # all paths from node to it's descendants have
+        # same number of black nodes
         if not self.check_num_black_nodes(self.root)[0]:
             print("The number of black nodes was off")
             return False
 
         # make sure the NIL node is still black
-        if self.nil.color != 'B':
+        if self.nil.color != "B":
             print("The nil node became red.")
             return False
 
         return True
-    
+
     def check_red_children(self, x):
         """
         Assert that all red nodes have black children.
@@ -322,8 +324,8 @@ class RBTree:
         if x != self.nil:
             if not self.check_red_children(x.left):
                 return False
-            if x.color == 'R':
-                if (x.left.color == 'R') or (x.right.color == 'R'):
+            if x.color == "R":
+                if (x.left.color == "R") or (x.right.color == "R"):
                     return False
             if not self.check_red_children(x.right):
                 return False
@@ -331,16 +333,18 @@ class RBTree:
 
     def check_num_black_nodes(self, x):
         """
-        Assert that all paths from tree.root to NIL have the same number of black nodes
-        
+        Assert that all paths from tree.root to NIL have the
+        same number of black nodes
+
         Returns:
-        bool: True if all paths from tree.root to NIL have the same number of black nodes.
+        bool: True if all paths from tree.root to NIL have the same
+        number of black nodes.
         int: Number of black nodes in a given path.
         """
         # for more info: https://gist.github.com/aldur/8c061c88b0f58e871776
         if x == self.nil:
             return True, 1
-        if x.color == 'R':
+        if x.color == "R":
             blacks = 0
         else:
             blacks = 1
@@ -365,4 +369,4 @@ class Node:
         """
         Prints out a string representation of a node.
         """
-        return f'Node({self.key}, color: {self.color}, left: {self.left}, right: {self.right})'
+        return f"Node({self.key}, color: {self.color}, left: {self.left}, right: {self.right})"
