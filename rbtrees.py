@@ -9,14 +9,67 @@ class RBTree:
         """
         Initialize tree with root as universal NIL node.
         """
-        self.nil = Node('black', None, None, None, None)
+        self.nil = Node('B', None, None, None, None)
         self.root = self.nil
-
+    
     def __repr__(self):
         """
-        Return string representation of Red Black Tree.
+        Adapted from MIT 6.006 reading section, bst.py.
         """
-        return f'Tree({self.root})'
+        if self.root is self.nil:
+            return "B:empty"
+
+        def recurse(node):
+            if node is self.nil:
+                return [], 0, 0
+
+            label = f"{node.color}:{node.key}"
+            left_lines, left_pos, left_width = recurse(node.left)
+            right_lines, right_pos, right_width = recurse(node.right)
+            middle = max(right_pos + left_width - left_pos + 1, len(label), 2)
+            pos = left_pos + middle // 2
+            width = left_pos + middle + right_width - right_pos
+
+            while len(left_lines) < len(right_lines):
+                left_lines.append(" " * left_width)
+            while len(left_lines) > len(right_lines):
+                right_lines.append(" " * right_width)
+
+            if (
+                (middle - len(label)) % 2 == 1
+                and node.parent is not None
+                and node is node.parent.left
+                and len(label) < middle
+            ):
+                label += "."
+            label = label.center(middle, ".")
+
+            if label[0] == ".":
+                label = " " + label[1:]
+
+            if label[-1] == ".":
+                label = label[:-1] + " "
+
+            lines = [
+                " " * left_pos + label + " " * (right_width - right_pos),
+                " " * left_pos
+                + "/"
+                + " " * (middle - 2)
+                + "\\"
+                + " " * (right_width - right_pos),
+            ]
+
+            for left_line, right_line in zip(left_lines, right_lines):
+                lines.append(
+                    left_line + " " * (width - left_width - right_width) + right_line
+                )
+
+            return lines, pos, width
+
+        lines = recurse(self.root)[0]
+
+        return '\n'.join(lines)
+
 
     def insert(self, key):
         """
@@ -27,7 +80,7 @@ class RBTree:
         key (int): Unique key to be added to Red-Black Tree as a new node.
         """
         # create node z, with parents and children as tree.nil
-        z = Node('red', key, self.nil, self.nil, self.nil)
+        z = Node('R', key, self.nil, self.nil, self.nil)
         # insert node Z and color it red
         y = self.nil
         x = self.root
@@ -35,7 +88,7 @@ class RBTree:
         if x == y:
             # set the root to be z and make z black
             self.root = z
-            z.color = 'black'
+            z.color = 'B'
         # otherwise find the right spot in the tree
         else:
             # while x is not nil (aka we've reached the bottom of the tree)
@@ -69,18 +122,18 @@ class RBTree:
         """
         # check the color of z's parent, if it's red, we have some problems
         # breakpoint()
-        if z.parent.color == 'red':
+        if z.parent.color == 'R':
             # check the color of z's uncle
             # see if z is on the left of right side of it's grandparent
             if z.parent == z.parent.parent.left:
                 # z is on the left, so uncle is on right
                 # if the uncle is also red...
-                if z.parent.parent.right.color == 'red':
+                if z.parent.parent.right.color == 'R':
                     # change the uncle and parent to black
-                    z.parent.color = 'black'
-                    z.parent.parent.right.color = 'black'
+                    z.parent.color = 'B'
+                    z.parent.parent.right.color = 'B'
                     # change the grandparent to red
-                    z.parent.parent.color = 'red'
+                    z.parent.parent.color = 'R'
                     # do we need to check that the uncle's color didn't
                     # mess something up?
                     # then repeat for the grandparent
@@ -92,9 +145,9 @@ class RBTree:
                     # right rotate grandfather
                     self.right_rotate(z.parent.parent)
                     # swap colors of former grandfather and parent
-                    z.parent.color = 'black'
+                    z.parent.color = 'B'
                     # the grandfather is now parent's right child
-                    z.parent.right.color = 'red'
+                    z.parent.right.color = 'R'
                 # Left Right Case
                 # parent left child, z right child
                 elif z == z.parent.right:
@@ -103,16 +156,16 @@ class RBTree:
                     # right rotate orig grandparent (which is now z's parent)
                     self.right_rotate(z.parent)
                     # z becomes black
-                    z.color = 'black'
+                    z.color = 'B'
                     # grandparent (now z's right child) becomes red
-                    z.right.color = 'red'
+                    z.right.color = 'R'
             else:
-                if z.parent.parent.left.color == 'red':
+                if z.parent.parent.left.color == 'R':
                     # change the uncle and parent to black
-                    z.parent.color = 'black'
-                    z.parent.parent.left.color = 'black'
+                    z.parent.color = 'B'
+                    z.parent.parent.left.color = 'B'
                     # change the grandparent to red
-                    z.parent.parent.color = 'red'
+                    z.parent.parent.color = 'R'
                     # do we need to check that the uncle's color didn't mess
                     # something up?
                     # then repeat for the grandparent
@@ -122,9 +175,9 @@ class RBTree:
                     # left rotate grandfather
                     self.left_rotate(z.parent.parent)
                     # swap colors of former grandfather and parent
-                    z.parent.color = 'black'
+                    z.parent.color = 'B'
                     # the grandfather is now parent's left child
-                    z.parent.left.color = 'red'
+                    z.parent.left.color = 'R'
                 # Right Left Case
                 # parent right child, z left child
                 elif z == z.parent.left:
@@ -133,10 +186,10 @@ class RBTree:
                     # left rotate orig grandparent (which is now z's parent)
                     self.left_rotate(z.parent)
                     # z becomes black
-                    z.color = 'black'
+                    z.color = 'B'
                     # grandparent (now z's right child) becomes red
-                    z.left.color = 'red'
-            self.root.color = 'black'
+                    z.left.color = 'R'
+            self.root.color = 'B'
 
     def left_rotate(self, x):
         """
@@ -228,7 +281,7 @@ class RBTree:
         bool: True if red-black tree requirements are met, else False.
         """
         # root and leaves (NIL) are black
-        if self.root.color != 'black':
+        if self.root.color != 'B':
             print("Root was not black")
             return False
 
@@ -253,7 +306,7 @@ class RBTree:
             return False
 
         # make sure the NIL node is still black
-        if self.nil.color != 'black':
+        if self.nil.color != 'B':
             print("The nil node became red.")
             return False
 
@@ -269,8 +322,8 @@ class RBTree:
         if x != self.nil:
             if not self.check_red_children(x.left):
                 return False
-            if x.color == 'red':
-                if (x.left.color == 'red') or (x.right.color == 'red'):
+            if x.color == 'R':
+                if (x.left.color == 'R') or (x.right.color == 'R'):
                     return False
             if not self.check_red_children(x.right):
                 return False
@@ -287,7 +340,7 @@ class RBTree:
         # for more info: https://gist.github.com/aldur/8c061c88b0f58e871776
         if x == self.nil:
             return True, 1
-        if x.color == 'red':
+        if x.color == 'R':
             blacks = 0
         else:
             blacks = 1
